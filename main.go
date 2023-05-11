@@ -6,9 +6,9 @@
 package main
 
 import (
-	"github.com/etix/mirrorbits/config"
-	"github.com/etix/mirrorbits/core"
-	"github.com/etix/mirrorbits/logs"
+	"github.com/OpenMandrivaSoftware/mirrorbits/config"
+	"github.com/OpenMandrivaSoftware/mirrorbits/core"
+	"github.com/OpenMandrivaSoftware/mirrorbits/logs"
 	"github.com/op/go-logging"
 	"os"
 )
