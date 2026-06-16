@@ -208,7 +208,7 @@ func (v *Version1) FixMirrorID(a *actions, m map[int]string) error {
 		if err != nil {
 			return err
 		}
-		conn.Send("HMSET", fmt.Sprintf("V1_MIRROR_%d", id), "ID", id, "name", name)
+		conn.Send("HSET", fmt.Sprintf("V1_MIRROR_%d", id), "ID", id, "name", name)
 		a.rename[fmt.Sprintf("V1_MIRROR_%d", id)] = fmt.Sprintf("MIRROR_%d", id)
 		a.delete = append(a.delete, fmt.Sprintf("MIRROR_%s", name))
 	}

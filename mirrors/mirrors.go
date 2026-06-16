@@ -211,7 +211,7 @@ func SetMirrorEnabled(r *database.Redis, id int, state bool) error {
 	defer conn.Close()
 
 	key := fmt.Sprintf("MIRROR_%d", id)
-	_, err := conn.Do("HMSET", key, "enabled", state)
+	_, err := conn.Do("HSET", key, "enabled", state)
 
 	// Publish update
 	if err == nil {
@@ -268,7 +268,7 @@ func SetMirrorState(r *database.Redis, id int, proto Protocol, state bool, reaso
 		args = append(args, "stateSince", time.Now().Unix())
 	}
 
-	_, err = conn.Do("HMSET", args...)
+	_, err = conn.Do("HSET", args...)
 
 	if err == nil {
 		// Publish update

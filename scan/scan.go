@@ -236,7 +236,7 @@ func (s *scan) ScannerAddFile(f filedata) {
 
 	// Save the size of the current file found on this mirror
 	ik := fmt.Sprintf("FILEINFO_%d_%s", s.mirrorid, f.path)
-	s.conn.Send("HMSET", ik, "size", f.size, "modTime", f.modTime)
+	s.conn.Send("HSET", ik, "size", f.size, "modTime", f.modTime)
 
 	// Publish update
 	database.SendPublish(s.conn, database.MIRROR_FILE_UPDATE, fmt.Sprintf("%d %s", s.mirrorid, f.path))
@@ -265,7 +265,7 @@ func (s *scan) setLastSync(conn redis.Conn, id int, protocol core.ScannerType, p
 			precision = core.Precision(time.Second)
 		}
 
-		conn.Send("HMSET", fmt.Sprintf("MIRROR_%d", id),
+		conn.Send("HSET", fmt.Sprintf("MIRROR_%d", id),
 			"lastSuccessfulSync", now,
 			"lastSuccessfulSyncProtocol", protocol,
 			"lastSuccessfulSyncPrecision", precision)
@@ -372,7 +372,7 @@ warn:
 finish:
 	// Store the offset in the database
 	key := fmt.Sprintf("MIRROR_%d", s.mirrorid)
-	_, err = s.conn.Do("HMSET", key, "tzoffset", ms)
+	_, err = s.conn.Do("HSET", key, "tzoffset", ms)
 	if err != nil {
 		return
 	}
@@ -532,7 +532,7 @@ func ScanSource(r *database.Redis, forceRehash bool, stop <-chan struct{}) (err 
 	// Create/Update the files' hash keys with the fresh infos
 	conn.Send("MULTI")
 	for _, e := range sourceFiles {
-		conn.Send("HMSET", fmt.Sprintf("FILE_%s", e.path),
+		conn.Send("HSET", fmt.Sprintf("FILE_%s", e.path),
 			"size", e.size,
 			"modTime", e.modTime,
 			"sha1", e.sha1,

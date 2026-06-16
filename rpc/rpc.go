@@ -465,7 +465,7 @@ func (c *CLI) setMirror(mirror *mirrors.Mirror) error {
 
 	// Save the values back into redis
 	conn.Send("MULTI")
-	conn.Send("HMSET", fmt.Sprintf("MIRROR_%d", mirror.ID),
+	conn.Send("HSET", fmt.Sprintf("MIRROR_%d", mirror.ID),
 		"ID", mirror.ID,
 		"name", mirror.Name,
 		"http", mirror.HttpURL,
@@ -493,10 +493,10 @@ func (c *CLI) setMirror(mirror *mirrors.Mirror) error {
 
 	// Reset state to down for unsupported protocol
 	if strings.HasPrefix(mirror.HttpURL, "http://") {
-		conn.Send("HMSET", fmt.Sprintf("MIRROR_%d", mirror.ID),
+		conn.Send("HSET", fmt.Sprintf("MIRROR_%d", mirror.ID),
 			"httpsUp", false)
 	} else if strings.HasPrefix(mirror.HttpURL, "https://") {
-		conn.Send("HMSET", fmt.Sprintf("MIRROR_%d", mirror.ID),
+		conn.Send("HSET", fmt.Sprintf("MIRROR_%d", mirror.ID),
 			"httpUp", false)
 	}
 
