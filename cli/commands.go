@@ -186,7 +186,7 @@ func (c *cli) CmdList(args ...string) error {
 		fmt.Fprint(w, "\tLOCATION ")
 	}
 	if *state == true {
-		fmt.Fprint(w, "\tSTATE\tSINCE")
+		fmt.Fprint(w, "\tSTATE\tSINCE\tREASON")
 	}
 	fmt.Fprint(w, "\n")
 
@@ -238,6 +238,12 @@ func (c *cli) CmdList(args ...string) error {
 				fmt.Fprintf(w, "\t%s", StatusString(mirror))
 			}
 			fmt.Fprintf(w, " \t(%s)", stateSince.Format(time.RFC1123))
+			if mirror.Enabled == true {
+				reason := ReasonString(mirror)
+				if reason != "" {
+					fmt.Fprintf(w, "\t%s", reason)
+				}
+			}
 		}
 		fmt.Fprint(w, "\n")
 	}
@@ -294,6 +300,31 @@ func StatusString(m *rpc.Mirror) string {
 		return https
 	}
 	return fmt.Sprintf("%s/%s", http, https)
+}
+
+func ReasonString(m *rpc.Mirror) string {
+	var http string
+	var https string
+
+	http = m.HttpDownReason
+	https = m.HttpsDownReason
+
+	if http == https {
+		return http
+	}
+	if IsHTTPOnly(m) {
+		return http
+	}
+	if IsHTTPSOnly(m) {
+		return https
+	}
+	if http == "" {
+		return https
+	}
+	if https == "" {
+		return http
+	}
+	return fmt.Sprintf("%s / %s", http, https)
 }
 
 func (c *cli) CmdAdd(args ...string) error {
