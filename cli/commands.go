@@ -168,22 +168,22 @@ func (c *cli) CmdList(args ...string) error {
 	sort.Sort(ByDate(list.Mirrors))
 
 	w := new(tabwriter.Writer)
-	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
-	fmt.Fprint(w, "Identifier ")
+	w.Init(os.Stdout, 0, 8, 1, '\t', 0)
+	fmt.Fprint(w, "Identifier")
 	if *score == true {
 		fmt.Fprint(w, "\tSCORE")
 	}
 	if *http == true {
-		fmt.Fprint(w, "\tHTTP ")
+		fmt.Fprint(w, "\tHTTP")
 	}
 	if *rsync == true {
-		fmt.Fprint(w, "\tRSYNC ")
+		fmt.Fprint(w, "\tRSYNC")
 	}
 	if *ftp == true {
-		fmt.Fprint(w, "\tFTP ")
+		fmt.Fprint(w, "\tFTP")
 	}
 	if *location == true {
-		fmt.Fprint(w, "\tLOCATION ")
+		fmt.Fprint(w, "\tLOCATION")
 	}
 	if *state == true {
 		fmt.Fprint(w, "\tSTATE\tSINCE\tREASON")
@@ -210,18 +210,18 @@ func (c *cli) CmdList(args ...string) error {
 		if err != nil {
 			log.Fatal("list error:", err)
 		}
-		fmt.Fprintf(w, "%s ", mirror.Name)
+		fmt.Fprintf(w, "%s", mirror.Name)
 		if *score == true {
-			fmt.Fprintf(w, "\t%d ", mirror.Score)
+			fmt.Fprintf(w, "\t%d", mirror.Score)
 		}
 		if *http == true {
-			fmt.Fprintf(w, "\t%s ", mirror.HttpURL)
+			fmt.Fprintf(w, "\t%s", mirror.HttpURL)
 		}
 		if *rsync == true {
-			fmt.Fprintf(w, "\t%s ", mirror.RsyncURL)
+			fmt.Fprintf(w, "\t%s", mirror.RsyncURL)
 		}
 		if *ftp == true {
-			fmt.Fprintf(w, "\t%s ", mirror.FtpURL)
+			fmt.Fprintf(w, "\t%s", mirror.FtpURL)
 		}
 		if *location == true {
 			countries := strings.Split(mirror.CountryCodes, " ")
@@ -229,7 +229,7 @@ func (c *cli) CmdList(args ...string) error {
 			if len(countries) >= 1 {
 				countryCode = countries[0]
 			}
-			fmt.Fprintf(w, "\t%s (%s) ", countryCode, mirror.ContinentCode)
+			fmt.Fprintf(w, "\t%s (%s)", countryCode, mirror.ContinentCode)
 		}
 		if *state == true {
 			if mirror.Enabled == false {
@@ -237,7 +237,7 @@ func (c *cli) CmdList(args ...string) error {
 			} else {
 				fmt.Fprintf(w, "\t%s", StatusString(mirror))
 			}
-			fmt.Fprintf(w, " \t(%s)", stateSince.Format(time.RFC1123))
+			fmt.Fprintf(w, "\t(%s)", stateSince.Format(time.RFC1123))
 			if mirror.Enabled == true {
 				reason := ReasonString(mirror)
 				if reason != "" {
@@ -931,7 +931,7 @@ func (c *cli) CmdExport(args ...string) error {
 	}
 
 	w := new(tabwriter.Writer)
-	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
+	w.Init(os.Stdout, 0, 8, 1, '\t', 0)
 
 	for _, m := range list.Mirrors {
 		if *disabled == false {
@@ -1066,7 +1066,7 @@ func (c *cli) CmdStats(args ...string) error {
 
 		// Format the results
 		w := new(tabwriter.Writer)
-		w.Init(os.Stdout, 0, 8, 0, '\t', 0)
+		w.Init(os.Stdout, 0, 8, 1, '\t', 0)
 
 		// Sort keys and count requests
 		var keys []string
@@ -1086,7 +1086,7 @@ func (c *cli) CmdStats(args ...string) error {
 			fmt.Fprintf(w, "\t\n")
 		}
 
-		fmt.Fprintf(w, "Total download requests: \t%d\n", requests)
+		fmt.Fprintf(w, "Total download requests:\t%d\n", requests)
 		w.Flush()
 	} else if cmd.Arg(0) == "mirror" {
 		// Mirror stats
@@ -1104,7 +1104,7 @@ func (c *cli) CmdStats(args ...string) error {
 
 		// Format the results
 		w := new(tabwriter.Writer)
-		w.Init(os.Stdout, 0, 8, 0, '\t', 0)
+		w.Init(os.Stdout, 0, 8, 1, '\t', 0)
 
 		fmt.Fprintf(w, "Identifier:\t%s\n", name)
 		if !reply.Mirror.Enabled {
