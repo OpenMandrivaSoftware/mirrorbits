@@ -169,7 +169,7 @@ func (c *cli) CmdList(args ...string) error {
 
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 1, '\t', 0)
-	fmt.Fprint(w, "Identifier")
+	fmt.Fprint(w, "IDENTIFIER")
 	if *score == true {
 		fmt.Fprint(w, "\tSCORE")
 	}
