@@ -232,18 +232,14 @@ func (c *cli) CmdList(args ...string) error {
 			fmt.Fprintf(w, "\t%s (%s)", countryCode, mirror.ContinentCode)
 		}
 		if *state == true {
-			if mirror.Enabled == false {
-				fmt.Fprintf(w, "\tdisabled")
-			} else {
-				fmt.Fprintf(w, "\t%s", StatusString(mirror))
-			}
-			fmt.Fprintf(w, "\t(%s)", stateSince.Format(time.RFC1123))
+			status := "disabled"
+			reason := ""
 			if mirror.Enabled == true {
-				reason := ReasonString(mirror)
-				if reason != "" {
-					fmt.Fprintf(w, "\t%s", reason)
-				}
+				status = StatusString(mirror)
+				reason = ReasonString(mirror)
 			}
+			since := stateSince.Format(time.RFC1123)
+			fmt.Fprintf(w, "\t%s\t(%s)\t%s", status, since, reason)
 		}
 		fmt.Fprint(w, "\n")
 	}
