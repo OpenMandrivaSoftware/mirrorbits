@@ -60,7 +60,7 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
 		// Shortcut: the redirect/json path only needs a handful of mirrors,
 		// but mirrorlist and metalink want the full candidate list so the
 		// client can fail over across all of them.
-		if !ctx.IsMirrorlist() && !ctx.IsMetalink() {
+		if !ctx.IsMirrorlist() && !ctx.IsMetalink() && !ctx.IsMetalink3() {
 			// Reduce the number of mirrors to process
 			mlist = mlist[:utils.Min(5, len(mlist))]
 		}
@@ -123,7 +123,7 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
 
 	if selected > 1 {
 
-		if ctx.IsMirrorlist() || ctx.IsMetalink() {
+		if ctx.IsMirrorlist() || ctx.IsMetalink() || ctx.IsMetalink3() {
 			// Don't reorder the results, just set the percentage
 			for i := 0; i < selected; i++ {
 				id := mlist[i].ID

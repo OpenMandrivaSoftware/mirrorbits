@@ -341,6 +341,8 @@ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Contex
 
 	if ctx.IsMirrorlist() {
 		resultRenderer = &MirrorListRenderer{}
+	} else if ctx.IsMetalink3() {
+		resultRenderer = &Metalink3Renderer{}
 	} else if ctx.IsMetalink() {
 		resultRenderer = &MetalinkRenderer{}
 	} else {

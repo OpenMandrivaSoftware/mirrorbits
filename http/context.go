@@ -42,6 +42,7 @@ type Context struct {
 	isFileStats   bool
 	isChecksum    bool
 	isMetalink    bool
+	isMetalink3   bool
 	isPretty      bool
 	secureOption  SecureOption
 }
@@ -65,6 +66,10 @@ func NewContext(w http.ResponseWriter, r *http.Request, t Templates) *Context {
 	} else if c.paramBool("meta4") || strings.Contains(strings.ToLower(r.Header.Get("Accept")), "application/metalink4+xml") {
 		c.typ = METALINK
 		c.isMetalink = true
+	} else if c.paramBool("metalink") || strings.Contains(strings.ToLower(r.Header.Get("Accept")), "application/metalink+xml") {
+		// Metalink 3.0 (metalinker.org), the format consumed by dnf/librepo
+		c.typ = METALINK
+		c.isMetalink3 = true
 	} else {
 		c.typ = STANDARD
 	}
@@ -134,9 +139,15 @@ func (c *Context) IsChecksum() bool {
 	return c.isChecksum
 }
 
-// IsMetalink returns true if a Metalink 4 document has been requested
+// IsMetalink returns true if a Metalink 4 (RFC 5854) document has been requested
 func (c *Context) IsMetalink() bool {
 	return c.isMetalink
+}
+
+// IsMetalink3 returns true if a Metalink 3.0 (metalinker.org) document has been
+// requested. This is the format consumed by dnf/librepo.
+func (c *Context) IsMetalink3() bool {
+	return c.isMetalink3
 }
 
 // IsPretty returns true if the pretty json has been requested
