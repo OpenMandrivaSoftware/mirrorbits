@@ -210,6 +210,8 @@ func (h *HTTP) requestDispatcher(w http.ResponseWriter, r *http.Request) {
 	switch ctx.Type() {
 	case MIRRORLIST:
 		fallthrough
+	case METALINK:
+		fallthrough
 	case STANDARD:
 		h.mirrorHandler(w, r, ctx)
 	case MIRRORSTATS:
@@ -261,6 +263,27 @@ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Contex
 	}
 
 	clientInfo := h.geoip.GetRecord(remoteIP) //TODO return a pointer?
+
+	// Allow the client to override its detected geolocation. This is mainly
+	// useful for testing (e.g. private IPs that can't be geolocated, as on the
+	// preprod) and to let a client request mirrors for a specific location.
+	// - country/continent drive the country/continent restriction and the
+	//   primary-country tie-break in the selection engine.
+	// - lat/lon set the client coordinates, which is what the distance-based
+	//   ranking actually consumes (a country code alone does not relocate the
+	//   client geographically).
+	if country := ctx.QueryParam("country"); country != "" {
+		clientInfo.CountryCode = strings.ToUpper(country)
+	}
+	if continent := ctx.QueryParam("continent"); continent != "" {
+		clientInfo.ContinentCode = strings.ToUpper(continent)
+	}
+	if v, err := strconv.ParseFloat(ctx.QueryParam("lat"), 32); err == nil {
+		clientInfo.Latitude = float32(v)
+	}
+	if v, err := strconv.ParseFloat(ctx.QueryParam("lon"), 32); err == nil {
+		clientInfo.Longitude = float32(v)
+	}
 
 	mlist, excluded, err := h.engine.Selection(ctx, h.cache, &fileInfo, clientInfo)
 
@@ -318,6 +341,8 @@ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Contex
 
 	if ctx.IsMirrorlist() {
 		resultRenderer = &MirrorListRenderer{}
+	} else if ctx.IsMetalink() {
+		resultRenderer = &MetalinkRenderer{}
 	} else {
 		switch GetConfig().OutputMode {
 		case "json":
